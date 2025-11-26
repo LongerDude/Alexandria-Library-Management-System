@@ -1,4 +1,4 @@
-package Logic;
+package logic;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,10 +17,17 @@ public class Library {
     }
 
     public Book findBook(String title){
-        return library.get(title);
+        Book existing = library.get(title);
+        if (existing == null){
+            System.out.println("Book not found");
+            return existing;
+        }
+        return existing;
     }
     public boolean borrowBook(String title, int quantity){
+
         Book existing = library.get(title);
+
         if(existing != null){
             return existing.borrow(quantity);
         }
