@@ -1,43 +1,56 @@
 package logic;
 
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class Library {
-    private Map<String, Book> library;
+
+    private Map<String, ArrayList<Book>> books;
+
     public Library(){
-        library = new HashMap<>();
+        books = new HashMap<>();
     }
+
     public boolean addBook(String title, String author, int quantity){
-        Book existing = library.putIfAbsent(title, new Book(title, author, quantity));
-        if(existing != null){
-            return existing.addQuantity(quantity);
+        String normalizedTitle = title.toLowerCase();
+        books.putIfAbsent(normalizedTitle, new ArrayList<>());
+        ArrayList<Book> booksWithTheSameTitle = books.get(normalizedTitle);
+        // Optional to check if it's present or not, thereby update or create.
+        Optional<Book> matchedBook = booksWithTheSameTitle.stream()
+                .filter(book -> book.getAuthor().equalsIgnoreCase(author))
+                .findFirst();
+
+        if (matchedBook.isPresent()){
+            return matchedBook.get().addQuantity(quantity);
+        } else {
+            try {
+                booksWithTheSameTitle.add(new Book(title, author, quantity));
+                return true;
+            } catch (IllegalArgumentException e) {
+                return false;
+            }
         }
-        return true;
     }
 
-    public Book findBook(String title){
-        Book existing = library.get(title);
-        if (existing == null){
-            System.out.println("Book not found");
-            return existing;
-        }
-        return existing;
-    }
-    public boolean borrowBook(String title, int quantity){
+    // The crutch of the project.
+    public ArrayList<Book> findBook(String title){
 
-        Book existing = library.get(title);
+        ArrayList<Book> matches = books.get(title.toLowerCase());
 
-        if(existing != null){
-            return existing.borrow(quantity);
+        if (matches == null) {
+            return new ArrayList<Book>();
         }
-        return false;
+        return matches;
     }
-    public boolean returnBook(String title, int quantity){
-        Book existing = library.get(title);
-        if(existing != null){
-            return existing.returnBook(quantity);
-        }
-        return false;
+
+    public boolean borrowBook(Book book, int quantity){
+        return book.borrow(quantity);
+    }
+
+    public boolean returnBook(Book book, int quantity){
+        return book.returnBook(quantity);
     }
 }

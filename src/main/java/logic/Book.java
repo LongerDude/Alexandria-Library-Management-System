@@ -1,5 +1,7 @@
 package logic;
 
+import java.util.Objects;
+
 public class Book {
     private String title;
     private String author;
@@ -66,5 +68,17 @@ public class Book {
         }
         borrowed -= amount;
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return Objects.equals(title, book.title) && Objects.equals(author, book.author);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, author);
     }
 }
