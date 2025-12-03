@@ -14,3 +14,4 @@
 `──''          ───`─'   ╲   ╲  ╱ `───'  `──`│  ,     .─.╱'───'        ╲   ╲  ╱           │  ,   ╱│  ,     .─.╱
                          `────'              `──`───'                  `────'             ───`─'  `──`───'
                                   Library Management System by Salmane Khalili
+Type start.
