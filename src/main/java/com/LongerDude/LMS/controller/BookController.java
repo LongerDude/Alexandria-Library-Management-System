@@ -40,15 +40,13 @@ public class BookController {
      */
     @PostMapping
     private ResponseEntity<Void> createBook(@RequestBody Book book, UriComponentsBuilder ucb) {
-        // Save the new book entity. The repository generates the ID.
+
         Book savedBook = bookRepository.save(book);
 
-        // Build the URI for the newly created resource, e.g., /api/books/1
         URI locationOfNewBook = ucb.path("/api/books/{id}")
                 .buildAndExpand(savedBook.getId())
                 .toUri();
 
-        // Return a 201 Created response, which is standard for resource creation.
         return ResponseEntity.created(locationOfNewBook).build();
     }
 
@@ -59,7 +57,6 @@ public class BookController {
      */
     @GetMapping
     private ResponseEntity<Iterable<Book>> getAllBooks() {
-        // FindAll returns all entries, which is returned in a 200 OK response.
         return ResponseEntity.ok(bookRepository.findAll());
     }
 
@@ -73,15 +70,11 @@ public class BookController {
      */
     @GetMapping("/{id}")
     private ResponseEntity<Book> getBook(@PathVariable Long id) {
-        // Use Optional to handle the case where the book might not exist
         Optional<Book> book = bookRepository.findById(id);
-
         if (book.isPresent()) {
-            // Debugging line (consider removing in production)
             System.out.println(book.get());
             return ResponseEntity.ok(book.get());
         } else {
-            // Return 404 Not Found if the book does not exist
             return ResponseEntity.notFound().build();
         }
     }
@@ -98,22 +91,16 @@ public class BookController {
      */
     @PutMapping("/{id}")
     private ResponseEntity<Void> updateBook(@PathVariable Long id, @RequestBody Book bookUpdate) {
-        // Try to find the existing book by ID
         return bookRepository.findById(id)
                 .map(existingBook -> {
-                    // Create a new Book instance, retaining immutable fields (ID, Title, Author)
-                    // and updating the mutable fields (Amount) from the request body.
                     Book updatedBook = new Book(
                             id,
                             existingBook.getTitle(),
                             existingBook.getAuthor(),
-                            bookUpdate.getAmount() // Value to be updated
+                            bookUpdate.getAmount() //
                     );
 
-                    // Save the updated entity (performs an update operation)
                     bookRepository.save(updatedBook);
-
-                    // Return 204 No Content, which is standard for a successful update without a body
                     return ResponseEntity.noContent().<Void>build();
                 })
                 // If the book is not found by ID, execute the alternative path

@@ -147,17 +147,13 @@ public class LMShell {
     public static long validQuantityInputLong(Scanner scanner) {
         while (true) {
             try {
-                // Use Long.parseLong() for IDs
                 long id = Long.parseLong(scanner.nextLine());
-
-                // ID must be non-negative.
                 if (id <= 0) {
                     System.out.println("Invalid input. Please enter a positive ID.");
                     continue;
                 }
                 return id;
             } catch (NumberFormatException e) {
-                // Catches input that cannot be parsed as a long integer (e.g., "abc")
                 System.out.print("Invalid input. Please enter a whole number for the ID: ");
             }
         }
@@ -184,10 +180,7 @@ public class LMShell {
             System.out.println("Action cancelled.");
             return;
         }
-
         try {
-            // Note: If you want to check if a book with the same title/author exists and only update amount,
-            // you'd need a custom query method in BookRepository (e.g., findByTitleAndAuthor).
             bookRepository.save(new Book(titleToAdd, authorToAdd, quantityToAdd));
             System.out.println("Book added successfully: " + titleToAdd);
         } catch (Exception e) {
@@ -226,18 +219,14 @@ public class LMShell {
                     existingBook.getAmount(), existingBook.getTitle(), amountToBorrow);
             return;
         }
-
-        // Calculate the new stock amount
         int newAmount = existingBook.getAmount() - amountToBorrow;
 
-        // Create a new Book instance for the update (ID is crucial here)
         Book updatedBook = new Book(
                 id,
                 existingBook.getTitle(),
                 existingBook.getAuthor(),
                 newAmount
         );
-
         bookRepository.save(updatedBook);
         System.out.printf("Successfully borrowed %d copies of '%s'. %d remaining.\n",
                 amountToBorrow, existingBook.getTitle(), newAmount);
@@ -269,17 +258,14 @@ public class LMShell {
             return;
         }
 
-        // Calculate the new stock amount (always increases)
         int newAmount = existingBook.getAmount() + amountToReturn;
 
-        // Create a new Book instance for the update
         Book updatedBook = new Book(
                 id,
                 existingBook.getTitle(),
                 existingBook.getAuthor(),
                 newAmount
         );
-
         bookRepository.save(updatedBook);
         System.out.printf("Successfully returned %d copies of '%s'. Total stock: %d.\n",
                 amountToReturn, existingBook.getTitle(), newAmount);

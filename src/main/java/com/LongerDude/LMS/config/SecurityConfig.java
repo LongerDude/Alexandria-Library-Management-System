@@ -34,12 +34,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((authorize) ->
-                        // Require authentication for all incoming requests
                         authorize.anyRequest().authenticated())
-                // Enable HTTP Basic authentication (username/password in the header)
                 .httpBasic(Customizer.withDefaults())
-                // Disable Cross-Site Request Forgery (CSRF) protection for simpler API testing
-                // NOTE: This should be enabled in a production environment with session-based authentication.
                 .csrf(csrf -> csrf.disable());
         return http.build();
     }
@@ -53,14 +49,11 @@ public class SecurityConfig {
      */
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-        // Create a default user with username "user" and password "password" and role "USER"
         UserDetails userDetails = User.builder()
                 .username("user")
-                // Encode the password before storing it for secure comparison
                 .password(passwordEncoder.encode("password"))
                 .roles("USER")
                 .build();
-        // Use InMemoryUserDetailsManager to manage the user in memory
         return new InMemoryUserDetailsManager(userDetails);
     }
 
